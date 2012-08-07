@@ -1,0 +1,31 @@
+.text.home
+  %section
+    %p
+      The
+      %strong unofficial
+      content-addressable repo of <a href="http://www.lua.org/">Lua</a> Scripts for <a href="http://redis.io">Redis</a>.
+
+    %p
+      In Redis, each Lua script is identified by taking the SHA1 of its body. This is a public place to discover, share and discuss scripts. Think of it like luarocks, cpan, rubygems, or npm but for Redis scripts.
+
+    %p
+      %a(href="http://redis.io/commands/eval" target="_blank") Redis EVAL command docs (http://redis.io) →
+
+    .columns
+
+      %section
+        %h2 Looking Up Scripts
+
+        %p
+          You can look up scripts by their SHA1
+          %a(href="/scripts/18ee51336532b6d3a3a07620cad0b7a1935476f3")= "/scripts/18ee51336532..."
+          OR their (unofficial) command name:
+          %a(href="/commands/SMEMHASHES")= "/commands/SMEMHASHES"
+
+      %section
+        %h2 Download it
+
+        %p
+          %a(href="http://redis.googlecode.com/files/redis-2.4.16.tar.gz") Redis 2.4.16 is the latest stable version.
+          Interested in release candidates or unstable versions?
+          %a(href="/download") Check the downloads page.

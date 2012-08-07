@@ -1,0 +1,46 @@
+.text
+
+  %h2= @command.sha
+
+  - keys = (@command.keys || [])
+
+  %h1.command
+    %span.name= @command.name
+    = "[#{keys.length}]"
+    - keys.each do |key|
+      %span.key= key.name
+  
+  %article
+    %aside
+      %h2
+        Other SMEMHASHES commands
+
+      %ul
+        - (@related_commands||[]).each do |command|
+          %li
+            %a(href="/commands/#{command.to_param}")
+              - if command == @command
+                %strong= command.name
+              - else
+                = command.name
+
+    %div.metadata
+      - if @command.complexity
+        %p <strong>Time complexity:</strong> #{@command.complexity}
+
+    %h2.source
+      Source
+      %small
+        %a(href="/scripts/#{@command.sha}.lua") raw
+    %pre
+      %code
+        = preserve do
+          = @command.source
+    %h3 Description
+    = @command.description
+    %h3 Example
+    %pre.console
+      = preserve do
+        = @command.example
+  #comments.text
+    #disqus_thread

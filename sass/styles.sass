@@ -1,0 +1,350 @@
+@import "compass/reset"
+@import "compass/css3"
+@import "compass/utilities/general/clearfix"
+
+@include reset-html5
+
+body, textarea
+  font: 13px/1.5 "Helvetica Neue", sans-serif
+
+h1, h2, h3
+  font-weight: 300
+  color: #000
+
+  >small
+    color: #999
+    font-size: 66%
+
+h1
+  font-size: 26px
+  line-height: 26px
+  margin: 18px 0 2px 0
+
+h2
+  font-size: 18px
+  line-height: 22px
+  margin: 14px 0 8px 0
+
+h3
+  font-size: 18px
+  line-height: 18px
+  margin: 13px 0 6px 0
+
+  &.source
+    > small
+      font-size: 75%
+      font-weight: medium
+
+code
+  font-family: "Menlo", "Monaco", monospace
+
+a
+  text-decoration: none
+
+  &:hover
+    text-decoration: underline
+
+$max-width: 900px
+
+body
+  $header-height: 45px
+  background-color: #F5F5F0
+  color: #333
+  padding: $header-height 0 10px 0
+  margin: 0
+
+  > header
+    $gradient-start: #323232
+    $gradient-stop: #000
+
+    @include box-shadow(#999, 0px, 4px, 8px)
+    background-color: #333
+    @include clearfix
+    @include background(linear-gradient(color_stops($gradient-start, $gradient-stop)))
+    border-top: 1px solid #000
+    height: $header-height
+    left: 0
+    padding: 0
+    position: fixed
+    top: 0
+    width: 100%
+    z-index: 1000
+
+    > .container
+      margin: 0 auto
+      max-width: $max-width
+
+      > a
+        $vertical-padding: ($header-height - 30px) / 2
+        float: left
+        border-right: 1px solid $gradient-stop
+        padding: $vertical-padding 20px $vertical-padding 0
+        width: 200px
+        color: #fff
+        font-family: "Helvetica Neue", sans-serif
+        font-weight: 100
+        font-size: 20px
+
+        img
+          display: block
+          height: 30px
+          float: left
+          margin-right: 1em
+
+    nav
+      float: left
+      border-left: 1px solid $gradient-start
+      padding: 0 0 0 20px
+
+      a
+        color: #ccc
+        display: block
+        float: left
+        font-family: "Helvetica Neue", sans-serif
+        font-size: 12px
+        font-weight: bold
+        line-height: $header-height
+        margin: 0 10px
+        text-decoration: none
+        @include text-shadow(#000, 0px, 1px, 1px)
+
+        &:first-child
+          margin-left: 0
+
+        &:hover
+          color: #fff
+          text-decoration: none
+
+  > footer
+    background: url(/images/redis-small.png) no-repeat left top
+    padding: 10px 10px 10px 50px
+    max-width: $max-width - 10px - 50px
+    margin: 20px auto
+    color: #777
+    position: relative
+    font-size: 11px
+
+    a
+      color: #444
+
+    .sponsor
+      position: absolute
+      top: 0
+      right: 0
+
+      img
+        display: block
+
+.text
+  @include box-shadow(#ccc, 0px, 0px, 10px)
+  @include clearfix
+  background-color: #fafafa
+  color: #333
+  margin: 0 auto
+  max-width: $max-width - 30px * 2
+  padding: 30px
+
+  a
+    color: #0066aa
+    @include text-shadow(#f0f0f0, 1px, 1px, 0px)
+
+    &:hover
+      color: #0099ff
+
+  p
+    margin: 5px 0
+
+  > p:first-of-type, > * > p:first-of-type
+    margin-top: 15px
+
+  strong
+    font-weight: 700
+
+  em
+    font-style: italic
+
+  sup
+    line-height: 100%
+    vertical-align: super
+    font-size: 70%
+
+  .math
+    font-weight: 700
+
+  pre code, .example
+    display: inline-block
+    padding: 15px
+    border: 1px solid #eee
+    margin: 10px 0
+    background-color: #fefefe
+    @include border-radius(10px)
+
+  .metadata
+    border-left: 3px solid #dfdfdf
+    color: #666
+    font-size: 0.9em
+    margin: 1.5em 0 0 0
+    padding: 0 0 0 1em
+
+  .example
+    max-height: 20 * 20px
+    width: 420px - 2 * 15px
+    overflow: auto
+
+    .monospace, pre, input
+      margin: 0
+      padding: 0
+      line-height: 20px
+      font-size: 12px
+      font-family: Menlo, "monospace"
+
+    pre
+      clear: both
+
+    .prompt, .command
+      float: left
+
+    .prompt
+      width: 50px
+      color: #888
+
+    .command, input
+      font-weight: bold
+
+    input
+      // Box width - padding - prompt - little extra
+      width: 420px - 2 * 15px - 50px - 15px
+      margin-left: -1px
+      outline: none
+      border: 0
+      color: #333
+
+  h1.command
+    padding-left: 1.5em
+
+    span
+      display: inline-block
+
+    span.name
+      margin-left: -1.5em
+
+  h1:first-child
+    margin-top: 0
+
+#comments
+  margin-top: 15px
+
+@media screen and (max-device-width: 480px)
+  body
+    padding: 0
+
+    > header
+      height: auto
+      padding: 0
+      position: relative
+
+      > .container
+        display: table
+        margin: 0
+        max-width: none
+        position: relative
+        width: 100%
+
+        > a
+          background: url(/images/redis.png) no-repeat 6px 4px
+          display: table-cell
+          float: none
+          height: 30px
+          overflow: hidden
+          padding: 5px 0
+          position: relative
+          width: 46px
+
+          img
+            display: none
+
+      nav
+        display: table-cell
+        padding: 5px 0 5px 8px
+        float: none
+        vertical-align: middle
+        border-left: 1px solid #323232
+        position: relative
+
+        a
+          font-size: 12px
+          margin: 0 4px 0 0
+          display: inline
+          height: auto
+          line-height: 18px
+
+    > footer
+      background-image: none
+      line-height: 22px
+      margin: 10px 0
+      padding: 2px 8px
+
+      > .sponsor
+        position: static
+
+        img
+          display: inline
+          vertical-align: middle
+
+  .text
+    padding: 15px 10px
+
+  #commands
+    .command
+      font-weight: bold
+
+.columns
+  $margin: 20px
+
+  @include clearfix
+
+  > *
+    float: left
+
+    &:first-child
+      border-right: 1px solid #eee
+
+      > *
+        margin-right: $margin !important
+
+    &:last-child
+      border-left: 1px solid #eee
+      left: -1px
+      position: relative
+
+      > *
+        margin-left: $margin
+
+  > section
+    width: 49%
+
+  &.sidebar
+    > section
+      width: 70%
+
+    > aside
+      width: 29.5%
+      min-height: 400px
+
+    .columns
+      margin-left: 0 !important
+      margin-right: 0 !important
+
+pre.console
+  color: #EAB542
+  background-color: black
+  padding: 1em
+  height: 200px
+  overflow: auto
+  font-family: "Console", monospace
+
+@import "home"
+@import "clients"
+@import "topics"
+@import "commands"
+

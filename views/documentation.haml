@@ -1,0 +1,24 @@
+.text
+  %article
+    %aside(style="width:200px")
+
+      %h2 EVALSHA.com Docs
+
+      If you are looking for documentation for this site, it is
+      %a(href="http://github.com/aaronblohowiak/evalsha") on github
+
+      %h2
+        Related commands
+
+      %ul
+        %li
+          %a(href="/commands/cmd")
+            %strong command.name
+
+    = markdown("documentation")
+  
+  #comments.text
+    #disqus_thread
+
+    :javascript
+

@@ -1,0 +1,36 @@
+!!! 5
+
+%html
+  %head
+    %meta(charset="utf-8")
+    %link(rel="stylesheet" href="/styles.css?#{File.mtime("sass/styles.sass").to_i}" type="text/css")
+    %link(rel="shortcut icon" href="/images/favicon.png")
+    %script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js")
+    %meta(name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0")
+
+    %title
+      = [@title, "EVALSHA"].compact.join(" – ")
+
+  %body(class="#{@css.join(" ") if @css}")
+    %header
+      .container
+        %a(href="/")
+          %img(src="/images/redis-small.png" alt="Redis")
+          %img(src="/images/evalsha-small.png" alt="Redis")
+          EVALSHA
+
+        %nav
+          %a(href="/") Home
+          %a(href="/Commands") Commands
+          %a(href="/documentation") Documentation
+          %a(href="/terms") LICENSE
+          %a(href="https://github.com/aaronblohowiak/evalsha/issues") EVALSHA.com Issues
+
+    = content
+
+    %footer
+      %p
+        This website is
+        <a href="https://github.com/aaronblohowiak/evalsha">open source software</a> (pull requests accepted)
+        developed by <a href="http://aaronblohowiak.com">Aaron Blohowiak</a>, based on the <a href="http://redis.io">Official Redis website</a> by <a href="http://citrusbyte.com">Citrusbyte</a>.
+        <br> The Redis logo was designed by <a href="http://www.carlosprioglio.com/">Carlos Prioglio</a>. See more <a href="http://redis.io/topics/sponsors">credits</a>.
