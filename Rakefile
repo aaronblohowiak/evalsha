@@ -10,14 +10,13 @@ end
 desc "Deploy"
 task :deploy do
   script = <<-EOS
-  cd ~/redis-io
+  cd ~/evalsha
   git pull
-  rvm 1.9.2 gem install dep --no-ri --no-rdoc
-  (rvm 1.9.2 exec dep check || rvm 1.9.2 exec dep install)
-  rvm 1.9.2 exec compass compile -c config/sass.rb views/styles.sass
-  kill -s INT $(cat log/redis-io.pid)
-  rvm 1.9.2 exec unicorn -D -c unicorn.rb -E production
+  rvm gemset create evalsha
+  rvm 1.9.2@evalsha gem install bundler
+  rvm 1.9.2@evalsha exec bundle install
+  rvm 1.9.2@evalsha exec compass compile -c config/sass.rb sass/styles.sass
   EOS
 
-  sh "ssh redis-io '#{script.split("\n").map(&:strip).join(" && ")}'"
+  sh "ssh evalsha.com '#{script.split("\n").map(&:strip).join(" && ")}'"
 end

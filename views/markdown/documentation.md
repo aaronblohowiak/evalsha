@@ -35,4 +35,6 @@
 * Lua Scripting-Based Reliable Queue implementation <https://github.com/seomoz/qless-core>
 
 # Want to add more?
-[Fork this site](http://github.com/aaronblohowiak/evalsha) and send a pull request
+[Fork this site](http://github.com/aaronblohowiak/evalsha) and send a pull request.
+
+This particular page is in markdown, and can be edited [on github](https://github.com/aaronblohowiak/evalsha/blob/master/views/markdown/documentation.md)

@@ -8,7 +8,7 @@ require 'redcarpet'
 require "ostruct"
 
 ROOT_PATH = File.dirname(__FILE__)
-Cuba.use Rack::Static, urls: ["/images"], root: File.join(ROOT_PATH, "public")
+Cuba.use Rack::Static, urls: ["/images", "/css"], root: File.join(ROOT_PATH, "public")
 
 
 Cuba.plugin Cuba::Render
@@ -104,11 +104,4 @@ EXAMPLE
       })
     res.write haml("script")
   end
-
-  on get, extension("css") do |file|
-    res.headers["Cache-Control"] = "public, max-age=29030400" if req.query_string =~ /[0-9]{10}/
-    res.headers["Content-Type"] = "text/css; charset=utf-8"
-    res.write render("sass/#{file}.sass")
-  end
-
 end

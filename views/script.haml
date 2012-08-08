@@ -12,23 +12,39 @@
   
   %article
     %aside
-      %h2
-        Other SMEMHASHES commands
-
       %ul
-        - (@related_commands||[]).each do |command|
-          %li
-            %a(href="/commands/#{command.to_param}")
-              - if command == @command
-                %strong= command.name
-              - else
-                = command.name
+        %li
+          %a(href="#command") Command
+        %li
+          %a(href="#description") Description
+        %li
+          %a(href="#example") Example
+        %li
+          %a(href="#source") Source 
+        %li
+          %a(href="#comments") Comments
 
-    %div.metadata
-      - if @command.complexity
-        %p <strong>Time complexity:</strong> #{@command.complexity}
+      / %h2
+      /   Other SMEMHASHES commands
 
-    %h2.source
+      / %ul
+      /   - (@related_commands||[]).each do |command|
+      /     %li
+      /       %a(href="/commands/#{command.to_param}")
+      /         - if command == @command
+      /           %strong= command.name
+      /         - else
+      /           = command.name
+
+    %h3#description Description
+    = @command.description
+
+    %h3#example Example
+    %pre.console
+      = preserve do
+        = @command.example
+
+    %h2#source.source
       Source
       %small
         %a(href="/scripts/#{@command.sha}.lua") raw
@@ -36,11 +52,18 @@
       %code
         = preserve do
           = @command.source
-    %h3 Description
-    = @command.description
-    %h3 Example
-    %pre.console
-      = preserve do
-        = @command.example
+
   #comments.text
     #disqus_thread
+
+    :javascript
+      var disqus_shortname = 'evalsha-com'; // required: replace example with your forum shortname
+
+      var disqus_identifier = '/script/#{@command.sha}';
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+        
