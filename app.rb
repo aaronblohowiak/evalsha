@@ -75,6 +75,7 @@ LUA
           OpenStruct.new({"name" => "setkey", "description" => "The "})
         ],
         :source => src,
+        :description => "This command gets all of the values for all of the hashes whose keys are stored in a given set, identified by the argument `setKey` ",
         :example => <<-EXAMPLE
 redis> hset aaron favorites 1
 (integer) 1
