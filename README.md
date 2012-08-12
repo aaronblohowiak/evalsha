@@ -6,7 +6,7 @@ A content-addressable database of Lua Scripts for the Redis database.
 
 * Let people share and discover Redis Lua Scripts
 * Let people modify script documentation
-* Each script is identified by its Redis SHA ( no version conflicts!)
+* Each script is identified by its Redis SHA ( no version conflicts! )
 
 ## Eventual Goals:
 

@@ -8,6 +8,7 @@ require 'redcarpet'
 require "ostruct"
 require 'digest/sha1'
 require 'set'
+require 'rubberband'
 
 
 COMMAND_FIELDS = Set.new(%w{num_keys script description name sha example})
@@ -41,11 +42,12 @@ end
 def create_command(cmd)
   hsh = cmd.tbl
   @redis.hmset cmd.sha, hsh.to_a.flatten
+  @search.index hsh, :id => cmd.sha
 end
 
 Cuba.define do
   @redis = Redis.connect()
-  # @client = ElasticSearch.new(ENV['ELASTICSEARCH_URL'])
+  @search = ElasticSearch.new(ENV['ELASTICSEARCH_URL'] || "http://localhost:9200", :index => :commands, :type =>:command)
   @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(:filter_html=> true, :no_links => true), :space_after_headers => true)
 
   def markdown(name)
@@ -78,6 +80,15 @@ Cuba.define do
     res.write haml("documentation")
   end
 
+  on get, "commands" do
+    @commands = @search.search({:sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]})
+    res.write haml("commands")
+  end
+
+  on get, "terms" do
+    res.write haml("terms")
+  end
+
   on get, "contribute" do
     @command = OpenStruct.new({:description=>"## Description\n\n\n\n## Return Value\n\n"})
     res.write haml("contribute")
@@ -95,8 +106,7 @@ Cuba.define do
     end
 
     @command = OpenStruct.new(hsh)
-
-
+    @command.updated_at = Time.now.xmlschema
     @command.script = @command.script.to_s.strip
 
     if @command.script.to_s.length <= 20
@@ -107,6 +117,18 @@ Cuba.define do
 
     if @command.num_keys != nil && @command.num_keys.to_s.length > 0  && @command.num_keys.to_s != @command.num_keys.to_i.to_s
       @errors.push "You must enter an integer number of keys"
+    end
+
+    if @command.name.to_s.length > 20
+      @errors.push "Please use a name less than 20 letters"
+    end
+
+    if @command.description.to_s.length > 4096*2
+      @errors.push "Please use a shorter description"
+    end
+
+    if @command.example.to_s.length > 1096*2
+      @errors.push "please use a shorter example"
     end
 
     if @errors.length > 0
