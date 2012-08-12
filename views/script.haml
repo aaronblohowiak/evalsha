@@ -6,9 +6,9 @@
 
   %h1.command
     %span.name= @command.name
-    = "[#{keys.length}]"
-    - keys.each do |key|
-      %span.key= key.name
+    - if @command.num_keys
+      = "[#{@command.num_keys.to_i}]"
+
   
   %article
     %aside
@@ -17,6 +17,8 @@
           %a(href="#command") Command
         %li
           %a(href="#description") Description
+        %li
+          %a(href="#returns") Return Value
         %li
           %a(href="#example") Example
         %li
@@ -36,8 +38,7 @@
       /         - else
       /           = command.name
 
-    %h3#description Description
-    = @command.description
+    =  @markdown.render(@command.description)
 
     %h3#example Example
     %pre.console
@@ -47,11 +48,11 @@
     %h2#source.source
       Source
       %small
-        %a(href="/scripts/#{@command.sha}.lua") raw
+        %a(href="/raw/#{@command.sha}") raw
     %pre
       %code
         = preserve do
-          = @command.source
+          = @command.script
 
   #comments.text
     #disqus_thread

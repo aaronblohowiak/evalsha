@@ -1,0 +1,62 @@
+.text
+	%article
+		%h1 Contribute to EVALSHA
+
+		%aside
+			
+
+		%strong Thanks!
+		To keep things free and easy, all the scripts and documentation on this site are in the Public Domain.  You must read and agree to the text under "License" in order to submit content to this site.
+
+		%br
+		%br
+		- if @errors && @errors.length > 0
+			.errors
+				%ul
+					- @errors.each do |error|
+						%li= error
+
+		%form(autocomplete="off" method="post")
+			%label
+				Script
+				%span(style="color:red;font-size:80%") (Only Required Field!)
+			%textarea.required.code(style="border:1px solid red;width:100%;height:14em" name="script")
+				=@command.script
+			%br
+			%br
+
+			%label Command Name
+			%input(type="text" value="#{@command.name}" name="name")
+			%span.help-block Used for searching, correlating with other scripts
+			%br
+
+			%label Number of Keys
+			%input(type="number" value="#{@command.num_keys}" name="num_keys")
+			%br
+			%br
+
+			%label
+				Description
+				%span(style="font-size:80%") Markdown. No Links. No HTML.
+			%textarea(style="width:100%;height:300px" name="description")
+				= preserve do
+					= @command.description
+			%br
+			%br
+			%br
+
+			%label
+				Example
+				%span(style="font-size:80%") (like redis-cli output... will be in a &lt;pre>&lt;code> block..)
+
+
+			%textarea.console(style="width:100%" name="example")
+				= @command.example
+
+			#license(style="font-size:80%")
+				= render("views/license.haml")
+
+			%br
+			%br
+			%button.btn.btn-primary(type="submit" style="font-size:200%;height:200%") Submit
+			%span.help-block By clicking submit, you affirm that you have read and agree to the above License

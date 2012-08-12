@@ -6,10 +6,14 @@ require 'cuba'
 require "cuba/render"
 require 'redcarpet'
 require "ostruct"
+require 'digest/sha1'
+require 'set'
+
+
+COMMAND_FIELDS = Set.new(%w{num_keys script description name sha example})
 
 ROOT_PATH = File.dirname(__FILE__)
 Cuba.use Rack::Static, urls: ["/images", "/css"], root: File.join(ROOT_PATH, "public")
-
 
 Cuba.plugin Cuba::Render
 
@@ -23,9 +27,27 @@ class Tilt::SassTemplate
   end
 end
 
-# Encoding.default_external = Encoding::UTF_8
+def sha(str)
+  Digest::SHA1.hexdigest str
+end
+
+
+class OpenStruct
+  def tbl
+    @table
+  end
+end
+
+def create_command(cmd)
+  hsh = cmd.tbl
+  @redis.hmset cmd.sha, hsh.to_a.flatten
+end
 
 Cuba.define do
+  @redis = Redis.connect()
+  # @client = ElasticSearch.new(ENV['ELASTICSEARCH_URL'])
+  @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(:filter_html=> true, :no_links => true), :space_after_headers => true)
+
   def markdown(name)
     render("views/markdown/#{name}.md")
   end
@@ -56,6 +78,45 @@ Cuba.define do
     res.write haml("documentation")
   end
 
+  on get, "contribute" do
+    @command = OpenStruct.new({:description=>"## Description\n\n\n\n## Return Value\n\n"})
+    res.write haml("contribute")
+  end
+
+  on post, "contribute" do
+    @errors = []
+
+    hsh = {}
+    
+    Rack::Request.new(env).params.each_pair do |k,v|
+      if COMMAND_FIELDS.include?(k)
+        hsh[k] = v
+      end
+    end
+
+    @command = OpenStruct.new(hsh)
+
+
+    @command.script = @command.script.to_s.strip
+
+    if @command.script.to_s.length <= 20
+      @errors.push "You must have a script at least 20 characters long. It's the only required field!"
+    else
+      @command.sha = sha(@command.script)
+    end
+
+    if @command.num_keys != nil && @command.num_keys.to_s.length > 0  && @command.num_keys.to_s != @command.num_keys.to_i.to_s
+      @errors.push "You must enter an integer number of keys"
+    end
+
+    if @errors.length > 0
+      res.write haml("contribute")
+    else
+      create_command(@command)
+      res.redirect "/scripts/#{@command.sha}"
+    end
+  end
+
   on get, "scripts/:sha" do |sha|
     #Get script!
 
@@ -68,13 +129,16 @@ end
 return ret
 LUA
 
-    @command = OpenStruct.new({
+    returns = <<-RETURNS
+      Multi-Bulk Reply: a list of hashes by key.
+RETURNS
+
+    command = OpenStruct.new({
         :sha => "18ee51336532b6d3a3a07620cad0b7a1935476f3",
         :name => "SMEMHASHES",
-        :keys => [
-          OpenStruct.new({"name" => "setkey", "description" => "The "})
-        ],
+        :num_keys => 1,
         :source => src,
+        :return_value => returns,
         :description => "This command gets all of the values for all of the hashes whose keys are stored in a given set, identified by the argument `setKey` ",
         :example => <<-EXAMPLE
 redis> hset aaron favorites 1
@@ -103,6 +167,13 @@ redis> evalsha 18ee51336532b6d3a3a07620cad0b7a1935476f3 1 people
 4. "aaron"
 EXAMPLE
       })
-    res.write haml("script")
+
+    hsh = @redis.hgetall sha
+    if hsh.keys.length > 0
+      @command = OpenStruct.new(hsh)
+      res.write haml("script")
+    else
+
+    end
   end
 end

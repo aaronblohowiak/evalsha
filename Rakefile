@@ -7,6 +7,10 @@ task :test do
 end
 
 
+task :style do
+  `rvm 1.9.2@evalsha exec compass compile -c config/sass.rb sass/styles.sass`
+end
+
 desc "Deploy"
 task :deploy do
   script = <<-EOS

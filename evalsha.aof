@@ -1,0 +1,84 @@
+*2
+$6
+SELECT
+$1
+0
+*14
+$5
+HMSET
+$40
+53cbfe7cfa82734f5a727c5dff280b10c8866817
+$4
+name
+$10
+SMEMHASHES
+$6
+script
+$147
+local keys = redis.call("smembers", KEYS[1])
+local ret = {}
+for k,v in pairs(keys) do 
+  ret[k] = {v, redis.call("hgetall", v)}
+end
+return ret
+$8
+num_keys
+$1
+1
+$3
+sha
+$40
+53cbfe7cfa82734f5a727c5dff280b10c8866817
+$11
+description
+$220
+## Description
+
+This command gets all of the values for all of the hashes whose keys are stored in a given set, identified by the argument `setKey`
+
+
+## Return Value
+
+Multi-Bulk Reply: a list of hashes by key.
+
+
+$7
+example
+$495
+redis> hset aaron favorites 1
+(integer) 1
+redis> hset aaron name aaron
+(integer) 1
+redis> hset antirez favorites 10341513551
+(integer) 1
+redis> hset antirez name salvatore
+(integer) 1
+(integer) 1
+redis> sadd people aaron
+(integer) 1
+redis> sadd people antirez
+(integer) 1
+redis> evalsha 18ee51336532b6d3a3a07620cad0b7a1935476f3 1 people
+1. 1. "antirez"
+2. 1. "favorites"
+2. "10341513551"
+3. "name"
+4. "salvatore"
+2. 1. "aaron"
+2. 1. "favorites"
+2. "1"
+3. "name"
+4. "aaron"
+*6
+$5
+HMSET
+$2
+hi
+$1
+a
+$1
+2
+$1
+b
+$1
+3
