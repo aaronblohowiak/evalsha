@@ -98,8 +98,6 @@ Cuba.define do
     res.write haml("commands")
   end
 
-
-
   on get, "terms" do
     res.write haml("terms")
   end
@@ -107,6 +105,14 @@ Cuba.define do
   on get, "contribute" do
     @command = OpenStruct.new({:description=>"## Description\n\n\n\n## Return Value\n\n"})
     res.write haml("contribute")
+  end
+
+  on get, "search" do
+    @query =  Rack::Request.new(env).params["q"]
+    @commands = @search.search({:query=>{:text_phrase_prefix=>{:_all=> @query}}, :sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]}).to_a
+    @commands = @commands.map{|c| OpenStruct.new(c.fields) }
+
+    res.write haml("search")
   end
 
   on post, "contribute" do
