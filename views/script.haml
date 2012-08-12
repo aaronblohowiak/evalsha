@@ -12,38 +12,28 @@
   
   %article
     %aside
-      %ul
-        %li
-          %a(href="#command") Command
-        %li
-          %a(href="#description") Description
-        %li
-          %a(href="#returns") Return Value
-        %li
-          %a(href="#example") Example
-        %li
-          %a(href="#source") Source 
-        %li
-          %a(href="#comments") Comments
+      - if @related_commands.length > 1
+        %h2
+          #{@command.name} commands
 
-      / %h2
-      /   Other SMEMHASHES commands
-
-      / %ul
-      /   - (@related_commands||[]).each do |command|
-      /     %li
-      /       %a(href="/commands/#{command.to_param}")
-      /         - if command == @command
-      /           %strong= command.name
-      /         - else
-      /           = command.name
+        %ul
+          - (@related_commands||[]).each do |command|
+            %li
+              %a(href="/scripts/#{command.sha}")
+                - if command.sha == @command.sha
+                  %strong= command.sha[0,8]+'...'
+                  (This version)
+                - else
+                  = command.sha[0,8]+'...'
+                  (#{command.updated_at})
 
     =  @markdown.render(@command.description)
 
-    %h3#example Example
-    %pre.console
-      = preserve do
-        = @command.example
+    - if @command.example.to_s.length > 3
+      %h3#example Example
+      %pre.console
+        = preserve do
+          = @command.example
 
     %h2#source.source
       Source

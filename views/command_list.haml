@@ -1,0 +1,11 @@
+%table.command_list(style="width:100%")
+	%thead
+		%th Name
+		%th SHA
+		%th Last Updated
+	- @commands.each do |command|
+		%tr.highlightable(onclick="window.location.href='/scripts/#{command.sha}'" style="cursor:pointer")
+			%td
+				%strong= command.name
+			%td= command.sha
+			%td= command.updated_at

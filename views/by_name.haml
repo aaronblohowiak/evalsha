@@ -1,0 +1,11 @@
+.text
+	%h1
+		= @name
+		Sorted by date added
+	Anyone can
+	%a(href="/contribute") contribute a Redis Lua Script
+	and give it the same name.  You might use this to find alternate implementations =D
+	%br
+	%br
+	= render("views/command_list.haml")
+
