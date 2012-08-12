@@ -1,0 +1,17 @@
+.text
+	%h1 All Commands, Sorted by date added
+	%br
+
+	%table(style="width:100%")
+		%thead
+			%th Name
+			%th SHA
+			%th Last Updated
+
+		- @commands.each do |command|
+			%tr(onclick="window.location.href='/scripts/#{command.fields["sha"]}'" style="cursor:pointer")
+				%td
+					%strong= command.fields["name"]
+				%td= command.fields["sha"]
+				%td= command.fields["updated_at"]
+
