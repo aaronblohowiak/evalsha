@@ -12,12 +12,12 @@
   
   %article
     %aside
-      - if @related_commands.length > 1
+      - if (@related_commands || []).length > 1
         %h2
           #{@command.name} commands
 
         %ul
-          - (@related_commands||[]).each do |command|
+          - @related_commands.each do |command|
             %li
               %a(href="/scripts/#{command.sha}")
                 - if command.sha == @command.sha

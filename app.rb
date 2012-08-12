@@ -48,7 +48,7 @@ end
 Cuba.define do
   @redis = Redis.connect()
   @search = ElasticSearch.new(ENV['ELASTICSEARCH_URL'] || "http://localhost:9200", :index => :commands, :type =>:command)
-  @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(:filter_html=> true, :no_links => true), :space_after_headers => true)
+  @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(:filter_html=> true, :no_links => true, :hard_wrap => true), :space_after_headers => true)
 
   def markdown(name)
     render("views/markdown/#{name}.md")
@@ -80,10 +80,25 @@ Cuba.define do
     res.write haml("documentation")
   end
 
+  on get, "commands/:name" do |name|
+    @name = name
+    @commands = @search.search({:query=>{:field=>{"name"=>name}}, :sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]}).to_a
+    @commands.map!{|c| OpenStruct.new(c.fields) }
+
+    if @commands.length == 1
+      res.redirect "/scripts/"+@commands[0].sha
+    else
+      res.write haml("by_name")
+    end
+  end
+
   on get, "commands" do
-    @commands = @search.search({:sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]})
+    @commands = @search.search({:sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]}).to_a
+    @commands = @commands.map{|c| OpenStruct.new(c.fields) }
     res.write haml("commands")
   end
+
+
 
   on get, "terms" do
     res.write haml("terms")
@@ -115,8 +130,8 @@ Cuba.define do
       @command.sha = sha(@command.script)
     end
 
-    if @command.num_keys != nil && @command.num_keys.to_s.length > 0  && @command.num_keys.to_s != @command.num_keys.to_i.to_s
-      @errors.push "You must enter an integer number of keys"
+    if (@command.num_keys != nil) && (@command.num_keys.to_s.length > 0)  && (@command.num_keys.to_s != @command.num_keys.to_i.to_s) ||( @command.num_keys.to_i < 0)
+      @errors.push "You must enter a positive integer number of keys"
     end
 
     if @command.name.to_s.length > 20
@@ -139,63 +154,23 @@ Cuba.define do
     end
   end
 
+  on get, "raw/:sha" do |sha|
+    hsh = @redis.hgetall sha
+    res["Content-Disposition"] = "attachment; filename=#{sha}.lua"
+    res.write hsh["script"]
+  end
+
   on get, "scripts/:sha" do |sha|
     #Get script!
-
-    src = <<-LUA
-local keys = redis.call("smembers", KEYS[1])
-local ret = {}
-for k,v in pairs(keys) do 
-  ret[k] = {v, redis.call("hgetall", v)}
-end
-return ret
-LUA
-
-    returns = <<-RETURNS
-      Multi-Bulk Reply: a list of hashes by key.
-RETURNS
-
-    command = OpenStruct.new({
-        :sha => "18ee51336532b6d3a3a07620cad0b7a1935476f3",
-        :name => "SMEMHASHES",
-        :num_keys => 1,
-        :source => src,
-        :return_value => returns,
-        :description => "This command gets all of the values for all of the hashes whose keys are stored in a given set, identified by the argument `setKey` ",
-        :example => <<-EXAMPLE
-redis> hset aaron favorites 1
-(integer) 1
-redis> hset aaron name aaron
-(integer) 1
-redis> hset antirez favorites 10341513551
-(integer) 1
-redis> hset antirez name salvatore
-(integer) 1
-(integer) 1
-redis> sadd people aaron
-(integer) 1
-redis> sadd people antirez
-(integer) 1
-redis> evalsha 18ee51336532b6d3a3a07620cad0b7a1935476f3 1 people
-1. 1. "antirez"
-2. 1. "favorites"
-2. "10341513551"
-3. "name"
-4. "salvatore"
-2. 1. "aaron"
-2. 1. "favorites"
-2. "1"
-3. "name"
-4. "aaron"
-EXAMPLE
-      })
 
     hsh = @redis.hgetall sha
     if hsh.keys.length > 0
       @command = OpenStruct.new(hsh)
+      @related_commands = @search.search({:query=>{:field=>{"name"=>@command.name}}, :sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]}).to_a
+      @related_commands.map!{|c| OpenStruct.new(c.fields) }
       res.write haml("script")
     else
-
+      res.write "SHA NOT FOUND"
     end
   end
 end
