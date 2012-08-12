@@ -11,3 +11,4 @@ A content-addressable database of Lua Scripts for the Redis database.
 ## Eventual Goals:
 
 * Automated testing / Example output ?
+* Implement better analyzer for search: http://stackoverflow.com/questions/9421358/filename-search-with-elasticsearch

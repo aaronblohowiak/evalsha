@@ -109,7 +109,8 @@ Cuba.define do
 
   on get, "search" do
     @query =  Rack::Request.new(env).params["q"]
-    @commands = @search.search({:query=>{:text_phrase_prefix=>{:_all=> @query}}, :sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]}).to_a
+    real_query = "*#{@query}*"
+    @commands = @search.search({:query=>{:query_string=>{:query => real_query, :default_operator=>"AND"}}, :sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]}).to_a
     @commands = @commands.map{|c| OpenStruct.new(c.fields) }
 
     res.write haml("search")
