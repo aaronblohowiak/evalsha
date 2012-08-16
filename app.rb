@@ -129,7 +129,7 @@ Cuba.define do
 
     @command = OpenStruct.new(hsh)
     @command.updated_at = Time.now.xmlschema
-    @command.script = @command.script.to_s.strip
+    @command.script = @command.script.to_s.strip.gsub("\r", "")
 
     if @command.script.to_s.length <= 20
       @errors.push "You must have a script at least 20 characters long. It's the only required field!"
