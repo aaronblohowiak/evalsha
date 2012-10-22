@@ -10,7 +10,6 @@ require 'digest/sha1'
 require 'set'
 require 'rubberband'
 
-
 COMMAND_FIELDS = Set.new(%w{num_keys script description name sha example})
 
 ROOT_PATH = File.dirname(__FILE__)
@@ -82,7 +81,7 @@ Cuba.define do
 
   on get, "commands/:name" do |name|
     @name = name
-    @commands = @search.search({:query=>{:field=>{"name"=>name}}, :sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]}).to_a
+    @commands = @search.search({:query=>{:field=>{"name"=>name}}, :sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]},{:limit=>10_000}).to_a
     @commands.map!{|c| OpenStruct.new(c.fields) }
 
     if @commands.length == 1
@@ -93,7 +92,7 @@ Cuba.define do
   end
 
   on get, "commands" do
-    @commands = @search.search({:sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]}).to_a
+    @commands = @search.search({:sort => [{"updated_at"=>"asc"}], :fields => ["name", "sha", "updated_at"]},{:limit=>10_000}).to_a
     @commands = @commands.map{|c| OpenStruct.new(c.fields) }
     res.write haml("commands")
   end
