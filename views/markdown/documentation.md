@@ -7,7 +7,7 @@
 * [SCRIPT EXISTS](http://redis.io/commands/script-exists) - Check if redis knows about the script already
 * [SCRIPT FLUSH](http://redis.io/commands/script-flush) - Clear Redis script cache. This will make all EVALSHAs fail until you replay the scripts
 * [SCRIPT KILL](http://redis.io/commands/script-kill) - Kills script IFF it hasn't written yet
-* [SCRIPT LOAD](http://redis.io/commands/script-kill) - Preload your Redis
+* [SCRIPT LOAD](http://redis.io/commands/script-load) - Preload your Redis
 
 
 # Blogs
