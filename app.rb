@@ -44,6 +44,19 @@ def create_command(cmd)
   @search.index hsh, :id => cmd.sha
 end
 
+# Checks if the parameter contains
+# certain HTML tags by downcasing
+# the string and removing all
+# whitespace, and then checking for
+# the precense of the tags
+def check_html(str)
+    str = str.downcase
+    str.gsub! /\s/, ''
+    check_for = [ /<a/, /<p/ ]
+
+    check_for.inject(false) { |accum, cond| accum ||= (str =~ cond) }
+end
+
 Cuba.define do
   @redis = Redis.connect()
   @search = ElasticSearch.new(ENV['ELASTICSEARCH_URL'] || "http://localhost:9200", :index => :commands, :type =>:command)
@@ -119,7 +132,7 @@ Cuba.define do
     @errors = []
 
     hsh = {}
-    
+
     Rack::Request.new(env).params.each_pair do |k,v|
       if COMMAND_FIELDS.include?(k)
         hsh[k] = v
@@ -150,6 +163,24 @@ Cuba.define do
 
     if @command.example.to_s.length > 1096*2
       @errors.push "please use a shorter example"
+    end
+
+    # Checks for certain HTML in fields
+    # While this could be bypassed by looking at the source 
+    # and figuring out what is and isn't acceptable
+    # since most of these spammers aren't using the markdown
+    # syntax for their links, I don't think they care
+    if check_html(@command.script.to_s)
+        @errors.push "Please do not use HTML in your command"
+    end
+    if check_html(@command.name.to_s)
+        @errors.push "Please do not use HTML in your name"
+    end
+    if check_html(@command.description.to_s)
+        @errors.push "Please do not use HTML in your description"
+    end
+    if check_html(@command.example.to_s)
+        @errors.push "Please do not use HTML in your example"
     end
 
     if @errors.length > 0
