@@ -23,6 +23,7 @@
 ## Other's thoughts:
 
 * 18 June 12 Sunil Arora - [Redis Lua Scripting](http://sunilarora.org/redis-lua-scripting)
+* 3 Match 12 Dan Lecocq - [http://dan.lecocq.us/wordpress/2012/03/11/redis-and-lua-for-robust-portable-libraries/](http://dan.lecocq.us/wordpress/2012/03/11/redis-and-lua-for-robust-portable-libraries/)
 * 14 March 12 TJ Holowaychuk - [Redis Lua scripting is badass](http://tjholowaychuk.com/post/19321054250/redis-lua-scripting-is-badass)
 
 ## Tutorial Blog posts:
@@ -38,3 +39,4 @@
 [Fork this site](http://github.com/aaronblohowiak/evalsha) and send a pull request.
 
 This particular page is in markdown, and can be edited [on github](https://github.com/aaronblohowiak/evalsha/blob/master/views/markdown/documentation.md)
+

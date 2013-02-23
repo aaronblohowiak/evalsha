@@ -52,7 +52,7 @@ end
 def check_html(str)
     str = str.downcase
     str.gsub! /\s/, ''
-    check_for = [ /<a/, /<p/ ]
+    check_for = [ /<a/, /<p/, /http:/ ]
 
     check_for.inject(false) { |accum, cond| accum ||= (str =~ cond) }
 end

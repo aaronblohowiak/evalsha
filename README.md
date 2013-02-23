@@ -32,7 +32,6 @@ You have to `rake style` each time you modify the sass because I don't touch it 
 
 In general, I prefer to use OpenStruct's to hashes because they make it easier to eventually move to real domain objects if we want to in the future. 
 
-A content-addressable database of Lua Scripts for the Redis database.
 
 ### TODO:
 
